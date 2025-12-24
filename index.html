@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="style.css">
+    <title>WordGuessr | Daily</title>
+</head>
+<body onload="onInit()">
+
+    <div class="header">
+        <div class="header-actions">
+            <button id="howtoplay-btn" onclick="showOverlay('howtoplay')">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </button>
+        </div>
+        <div class="title">
+            <span>WORDGUESSR</span>
+            <span>DAILY</span>
+        </div>
+        <div class="header-actions">
+            <button id="stats-btn" onclick="showModal('stats')">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+            </button>
+            <button id="settings-btn" onclick="showOverlay('settings')">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="words" id="board"></div>
+    <span id="candidates-left"></span>
+
+    <div style="position: relative; margin-top: auto;">
+        <div class="keyboard" id="keyboard"></div>
+        <div class="end-actions" id="end-screen">
+            <span id="word-answer"></span>
+            <span>ANSWER</span>
+            <button id="playagain" onclick="onClickPlayAgain()">PLAY<br>AGAIN</button>
+        </div>
+    </div>
+
+    <div class="backdrop" id="backdrop" onclick="closeAll()"></div>
+
+    <div class="modal" id="stats-modal">
+        <span class="close-icon" onclick="closeAll()">&times;</span>
+        <div class="modal-title">STATISTICS</div>
+        <div class="modal-content" id="stats-content">
+            </div>
+    </div>
+
+    <div class="overlay" id="howtoplay-overlay">
+        <div class="howtoplay">
+            <span class="close-icon" onclick="closeAll()">&times;</span>
+            <h2>HOW TO PLAY</h2>
+            <p>Guess the <b>WORD</b> in 6 attempts.</p>
+            <p>Each guess must be a valid 5 letter word.</p>
+            
+            <div class="line-sep"></div>
+            
+            <b>Examples</b>
+            <div class="letters-example">
+                <div class="letter correct">W</div><div>E</div><div>A</div><div>R</div><div>Y</div>
+            </div>
+            <p>W is in the word and in the correct spot.</p>
+
+            <div class="letters-example">
+                <div>P</div><div class="letter semi">I</div><div>L</div><div>L</div><div>S</div>
+            </div>
+            <p>I is in the word but in the wrong spot.</p>
+
+            <div class="letters-example">
+                <div>V</div><div>A</div><div>G</div><div class="letter incorrect">U</div><div>E</div>
+            </div>
+            <p>U is not in the word in any spot.</p>
+        </div>
+    </div>
+
+    <div class="overlay" id="settings-overlay">
+        <div class="settings">
+            <span class="close-icon" onclick="closeAll()">&times;</span>
+            <h2>SETTINGS</h2>
+            
+            <div class="setting-row">
+                <div class="setting-text">
+                    <h4>Hard Mode</h4>
+                    <p>Revealed hints must be used in guesses</p>
+                </div>
+                <div class="slider" id="hard-mode" onclick="toggleSetting('hard')"></div>
+            </div>
+
+            <div class="setting-row">
+                <div class="setting-text">
+                    <h4>Dark Mode</h4>
+                    <p>Switch between light and dark themes</p>
+                </div>
+                <div class="slider on" id="dark-mode" onclick="toggleSetting('dark')"></div>
+            </div>
+
+            <div class="setting-row">
+                <div class="setting-text">
+                    <h4>High Contrast Mode</h4>
+                    <p>For improved color vision</p>
+                </div>
+                <div class="slider" id="contrast-mode" onclick="toggleSetting('contrast')"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>
